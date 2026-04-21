@@ -1,0 +1,23 @@
+{
+  "name": "mcp-wallet-server",
+  "version": "1.0.0",
+  "description": "MCP server integrating BitPay, Trust Wallet, Coinbase (cb-mcp), MetaMask/ethers, Sentio Processor",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "ethers": "^6.13.0",
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,11 +1,10 @@
 {
   "mcpServers": {
-
     "mcp-wallet": {
       "command": "node",
       "args": ["/absolute/path/to/mcp-wallet-server/server.js"],
       "env": {
-        "RPC_URL": "http://localhost:8545",
+        "RPC_URL": "https://solana-devnet.g.alchemy.com/v2/RpMtmcFjjH4P737rmQvgun0TXXwNcAFW",
         "BITPAY_API_KEY": "YOUR_BITPAY_KEY",
         "COINBASE_API_KEY": "YOUR_COINBASE_KEY",
         "COINBASE_API_SECRET": "YOUR_COINBASE_SECRET",
@@ -13,7 +12,6 @@
         "SENTIO_PROJECT_SLUG": "YOUR_PROJECT"
       }
     },
-
     "sentio-mcp": {
       "command": "npx",
       "args": ["-y", "@sentio/mcp"],
@@ -21,16 +19,6 @@
         "SENTIO_API_KEY": "YOUR_SENTIO_KEY",
         "SENTIO_PROJECT_SLUG": "YOUR_PROJECT"
       }
-    },
-
-    "cb-mcp": {
-      "command": "npx",
-      "args": ["-y", "@coinbase/cb-mcp"],
-      "env": {
-        "COINBASE_API_KEY_NAME": "YOUR_CB_API_KEY_NAME",
-        "COINBASE_API_PRIVATE_KEY": "YOUR_CB_PRIVATE_KEY"
-      }
     }
-
   }
 }

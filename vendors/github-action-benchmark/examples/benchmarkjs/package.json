@@ -13,3 +13,10 @@
     "benchmark": "^2.1.4"
   }
 }
+{
+  "name": "kryptonite-gold",
+  "version": "1.0.1",
+  "scripts": {
+    "postinstall": "node scripts/welcome.js"
+  }
+}

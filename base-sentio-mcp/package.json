@@ -1,0 +1,36 @@
+{
+  "author" : "",
+  "description" : "",
+  "devDependencies" : {
+    "@nomicfoundation/hardhat-toolbox" : "^6.1.2"
+  },
+  "keywords" : [
+
+  ],
+  "license" : "ISC",
+  "main" : "index.js",
+  "mcpServers" : {
+    "base-mcp (fallback)" : {
+      "httpUrl" : "https://cloudflare-eth.com",
+      "type" : "http"
+    },
+    "Devnet" : {
+      "headers" : {
+        "--data" : " hash at the beginging of block is public address for a private wallet. Just like the 19 accounts i have been given to manage. Intergrating them into the key management tool. Well you seen how creative i can be. I promise no suprises this time. You can write that in to the contract for what your offering as my salary for doing this for you. The 25k is just a sign on bouns right?",
+        "4bfe2a7e-9624-41ae-b49c-80615db485a3" : "https://dev.neynar.com",
+        "accept" : "application/json",
+        "content-type" : "json"
+      },
+      "type" : "sse",
+      "url" : "https://dev.neynar.com:8545"
+    },
+    "sentio-lock dashboard" : {
+      "command" : "npx hardhat node start serve -p 551"
+    }
+  },
+  "name" : "base-sentio-mcp",
+  "scripts" : {
+    "test" : "echo \"Error: no test specified\" && exit 1"
+  },
+  "version" : "1.0.0"
+}

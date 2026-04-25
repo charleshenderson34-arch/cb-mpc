@@ -56,3 +56,60 @@ app.get('/api/solana/info', async (req, res) => {
 });
 
 app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
+import express from 'express';
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+// 1. Setup Solana Connection
+const connection = new Connection(process.env.SOLANA_RPC_URL || "https://api.devnet.solana.com");
+
+// 2. Initialize MCP Server
+const server = new McpServer({
+  name: "mcp-wallet-server",
+  version: "1.0.0",
+});
+
+// 3. Register Solana Tools
+server.tool(
+  "get_balance",
+  "Get the SOL balance of a specific wallet address on Devnet",
+  {
+    address: { type: "string", description: "The Solana wallet public key" }
+  },
+  async ({ address }) => {
+    try {
+      const pubkey = new PublicKey(address);
+      const balance = await connection.getBalance(pubkey);
+      return {
+        content: [{ type: "text", text: `Balance: ${balance / LAMPORTS_PER_SOL} SOL` }]
+      };
+    } catch (err) {
+      return { content: [{ type: "text", text: `Error: ${err.message}` }], isError: true };
+    }
+  }
+);
+
+// 4. Setup Express with SSE
+const app = express();
+let transport;
+
+app.get("/mcp", (req, res) => {
+  transport = new SSEServerTransport("/messages", res);
+  server.connect(transport);
+});
+
+app.post("/messages", (req, res) => {
+  if (transport) {
+    transport.handlePostMessage(req, res);
+  }
+});
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Solana MCP Wallet Server running on port ${PORT}`);
+});
+

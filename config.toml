@@ -18,3 +18,6 @@ args = [ "-y", "@upstash/context7-mcp" ]
 UPSTASH_REDIS_REST_URL = "https://wise-jaguar-106351.upstash.io"
 UPSTASH_REDIS_REST_TOKEN = "gQAAAAAAAZ9vAAIgcDFjNDFmMDJhZTA1ZjA0Yzg0YmYyZmE5YmM2M2U3NzU3Yg"
 
+[dependencies]
+redis = { version = "0.23.0", features = ["tls-native-tls"]}
+

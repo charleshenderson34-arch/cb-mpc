@@ -1,61 +1,73 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const { Connection, Keypair, Transaction, SystemProgram, PublicKey } = require('@solana/web3.js');
-const Anthropic = require('@anthropic-ai/sdk');
+import express from 'express';
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { 
+  Connection, 
+  PublicKey, 
+  Keypair, 
+  SystemProgram, 
+  Transaction, 
+  LAMPORTS_PER_SOL 
+} from "@solana/web3.js";
+import bs58 from 'bs58'; // You may need to: npm install bs58
+import dotenv from 'dotenv';
 
 dotenv.config();
-const app = express();
-app.use(cors());
-app.use(express.json());
 
-const connection = new Connection(process.env.ALCHEMY_RPC, 'confirmed');
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const walletKp = Keypair.fromSecretKey(new Uint8Array(JSON.parse(process.env.SOLANA_PRIVATE_KEY)));
+const connection = new Connection(process.env.SOLANA_RPC_URL);
 
-// --- AI Chat Endpoint ---
-app.post('/api/chat', async (req, res) => {
+// 1. Initialize the Server Wallet
+// Expects a Base58 string or a JSON array string in your .env
+const secretKeyString = process.env.SOLANA_PRIVATE_KEY;
+const serverWallet = Keypair.fromSecretKey(
+  secretKeyString.startsWith('[') 
+    ? Uint8Array.from(JSON.parse(secretKeyString)) 
+    : bs58.decode(secretKeyString)
+);
+
+const server = new McpServer({
+  name: "mcp-wallet-server",
+  version: "1.0.0",
+});
+
+// 2. Add the Transfer Tool
+server.tool(
+  "transfer_sol",
+  "Send SOL from the server wallet to another address on Devnet",
+  {
+    to: { type: "string", description: "The recipient's public key" },
+    amount: { type: "number", description: "Amount of SOL to send" }
+  },
+  async ({ to, amount }) => {
     try {
-        const { messages, systemPrompt } = req.body;
-        const response = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20240620",
-            max_tokens: 1000,
-            system: systemPrompt,
-            messages: messages
-        });
-        res.json(response);
+      const recipient = new PublicKey(to);
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: serverWallet.publicKey,
+          toPubkey: recipient,
+          lamports: amount * LAMPORTS_PER_SOL,
+        })
+      );
+
+      const signature = await connection.sendTransaction(transaction, [serverWallet]);
+      
+      // Optional: Wait for confirmation
+      await connection.confirmTransaction(signature);
+
+      return {
+        content: [{ 
+          type: "text", 
+          text: `Successfully sent ${amount} SOL. Transaction: https://explorer.solana.com/tx/${signature}?cluster=devnet` 
+        }]
+      };
     } catch (err) {
-        res.status(500).json({ error: err.message });
+      return { content: [{ type: "text", text: `Transfer failed: ${err.message}` }], isError: true };
     }
-});
+  }
+);
 
-// --- Solana Transaction Endpoint ---
-app.post('/api/solana/memo', async (req, res) => {
-    try {
-        const { payload } = req.body;
-        const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
-        
-        const tx = new Transaction().add({
-            keys: [{ pubkey: walletKp.publicKey, isSigner: true, isWritable: false }],
-            programId: MEMO_PROGRAM_ID,
-            data: Buffer.from(payload, 'utf-8') // Buffer works fine on the backend!
-        });
+// (Keep the Express/SSE setup from the previous step here...)
 
-        const signature = await connection.sendTransaction(tx, [walletKp]);
-        await connection.confirmTransaction(signature);
-        res.json({ signature });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// --- Utility Endpoints ---
-app.get('/api/solana/info', async (req, res) => {
-    const balance = await connection.getBalance(walletKp.publicKey);
-    res.json({ address: walletKp.publicKey.toBase58(), balance: balance / 1e9 });
-});
-
-app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));
 import express from 'express';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";

@@ -1,5 +1,17 @@
 {
   "mcpServers": {
+    "chainstack": {
+      "url": "https://mcp.chainstack.com/mcp"
+    },
+    "solana-foundation": {
+      "command": "npx",
+      "args": ["-y", "@solana/mcp-server", "https://mcp.solana.com/mcp"]
+    }
+  }
+}
+
+{
+  "mcpServers": {
 
     "mcp-wallet": {
       "command": "node",

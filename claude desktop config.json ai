@@ -3,9 +3,9 @@
 
     "mcp-wallet": {
       "command": "node",
-      "args": ["/absolute/path/to/mcp-wallet-server/server.js"],
+      "args": ["/Root/solana-mcp/mcp-wallet-server/server.js"],
       "env": {
-        "RPC_URL": "http://localhost:8545",
+        "RPC_URL": "http://localhost:8089",
         "BITPAY_API_KEY": "YOUR_BITPAY_KEY",
         "COINBASE_API_KEY": "organizations/60bfedf4-17db-451f-80aa-a7291a690bbd/apiKeys/7b963d75-087b-4f7d-9ba6-c99f4ab2a14e",
         "COINBASE_API_SECRET": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEICqN9yjJZfpI/1wxFBGDrAdHEO86/Ng9vd05WA4S00JDoAoGCCqGSM49\nAwEHoUQDQgAEGiJdleJeeD3ofg9TOkE+DApVXI5pssURHnQ/4OpXPvj9XKU0PNzs\nGX53Ee8G2Q6ELKEi63SU3+v2F0eRnDq0bw==\n-----END EC PRIVATE KEY-----\n,
@@ -55,5 +55,28 @@
   ],
   "env": {
     "u1PBnXfqs3TCwuPlJiNHd7QhQL960EfRx": "u1PBnXfqs3TCwuPlJiNHd7QhQL960EfRx"
+  }
+}
+{
+  "name": "mcp-wallet-server",
+  "version": "1.0.0",
+  "description": "MCP server integrating BitPay, Trust Wallet, Coinbase (cb-mcp), MetaMask/ethers, Sentio Processor",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "ethers": "^6.13.0",
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

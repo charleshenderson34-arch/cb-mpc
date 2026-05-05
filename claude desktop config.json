@@ -92,3 +92,17 @@
     "node": ">=18.0.0"
   }
 }
+{
+  "mcpServers": {
+    "helius": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@helius-labs/helius-mcp@latest"
+      ],
+      "env": {
+        "HELIUS_API_KEY": "YOUR_HELIUS_API_KEY_HERE"
+      }
+    }
+  }
+}

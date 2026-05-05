@@ -101,7 +101,7 @@
         "@helius-labs/helius-mcp@latest"
       ],
       "env": {
-        "HELIUS_API_KEY": "YOUR_HELIUS_API_KEY_HERE"
+        "204524f8-a4fc-4f08-880b-8e09d72ba4fb": "204524f8-a4fc-4f08-880b-8e09d72ba4fb"
       }
     }
   }
